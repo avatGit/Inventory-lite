@@ -1,5 +1,4 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/models/category.dart';
 import '../data/models/product.dart';
@@ -15,6 +14,7 @@ final productRepositoryProvider = Provider<ProductRepository>((ref) {
 final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
   return MockCategoryRepository();
 });
+
 final productsProvider = StreamProvider<List<Product>>((ref) {
   final repository = ref.watch(productRepositoryProvider);
   return repository.watchProducts();
@@ -25,9 +25,41 @@ final categoriesProvider = StreamProvider<List<Category>>((ref) {
   return repository.watchCategories();
 });
 
-final searchQueryProvider = StateProvider<String>((ref) => '');
+class SearchQueryNotifier extends Notifier<String> {
+  @override
+  String build() => '';
 
-final selectedCategoryProvider = StateProvider<String>((ref) => 'all');
+  void setQuery(String query) {
+    state = query;
+  }
+
+  void clear() {
+    state = '';
+  }
+}
+
+final searchQueryProvider =
+    NotifierProvider<SearchQueryNotifier, String>(
+  SearchQueryNotifier.new,
+);
+
+class SelectedCategoryNotifier extends Notifier<String> {
+  @override
+  String build() => 'all';
+
+  void select(String categoryId) {
+    state = categoryId;
+  }
+
+  void reset() {
+    state = 'all';
+  }
+}
+
+final selectedCategoryProvider =
+    NotifierProvider<SelectedCategoryNotifier, String>(
+  SelectedCategoryNotifier.new,
+);
 
 final filteredProductsProvider = Provider<AsyncValue<List<Product>>>((ref) {
   final productsAsync = ref.watch(productsProvider);
