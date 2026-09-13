@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:inventory_lite/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: Initialiser Firebase une fois qu'il ya les fichiers de config
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const ProviderScope(child: InventoryLiteApp()));
 }
@@ -22,9 +22,7 @@ class InventoryLiteApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const Scaffold(
-        body: Center(child: Text('InventoryLite - Setup Initial Ok')),
-      ),
+      home: const Scaffold(body: Center(child: Text('InventoryLite App'))),
     );
   }
 }
