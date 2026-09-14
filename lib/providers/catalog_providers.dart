@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../data/models/category.dart';
 import '../data/models/product.dart';
 import '../data/repositories/category_repository.dart';

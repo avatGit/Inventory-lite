@@ -2,18 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/category.dart';
 import 'category_repository.dart';
 
-class FirestoreCategoryRepository implements CategoryRepository{
-  final firebaseFirestore _firestore;
+class FirestoreCategoryRepository implements CategoryRepository {
+  final FirebaseFirestore _firestore;
 
-  FirestoreCategoryRepository({FirebaseFirestore? firestore}) : _firestore = firestore ?? FirebaseFirestore.instance;
+  FirestoreCategoryRepository({FirebaseFirestore? firestore})
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  CollectionReference<Map<String, dynamic>> get _categoriesRef => _firestore.collection('categories');
+  CollectionReference<Map<String, dynamic>> get _categoriesRef =>
+      _firestore.collection('categories');
 
   @override
   Stream<List<Category>> watchCategories() {
     return _categoriesRef.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc){return Category.fromMap(doc.data(), doc.id);}).toList();
-    } );
+      return snapshot.docs.map((doc) {
+        return Category.fromMap(doc.data(), doc.id);
+      }).toList();
+    });
   }
 
   @override
