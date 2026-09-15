@@ -1,23 +1,22 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../data/models/category.dart';
 import '../data/models/product.dart';
 import '../data/repositories/category_repository.dart';
-import '../data/repositories/firestore_category_repository.dart';
-import '../data/repositories/firestore_product_repository.dart';
-import '../data/repositories/firestore_stock_movement_repository.dart';
+import '../data/repositories/mock_category_repository.dart';
+import '../data/repositories/mock_product_repository.dart';
 import '../data/repositories/product_repository.dart';
+import '../data/repositories/firestore_stock_movement_repository.dart';
 import '../data/repositories/stock_movement_repository.dart';
 
-// --- Repositories ---
 final productRepositoryProvider = Provider<ProductRepository>((ref) {
-  return FirestoreProductRepository();
+  return MockProductRepository();
 });
 
 final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
-  return FirestoreCategoryRepository();
+  return MockCategoryRepository();
 });
 
-// Stream Provider
 final productsProvider = StreamProvider<List<Product>>((ref) {
   final repository = ref.watch(productRepositoryProvider);
   return repository.watchProducts();
@@ -28,7 +27,6 @@ final categoriesProvider = StreamProvider<List<Category>>((ref) {
   return repository.watchCategories();
 });
 
-// Notifiers
 class SearchQueryNotifier extends Notifier<String> {
   @override
   String build() => '';
@@ -64,7 +62,6 @@ final selectedCategoryProvider =
       SelectedCategoryNotifier.new,
     );
 
-// Computed Providers
 final filteredProductsProvider = Provider<AsyncValue<List<Product>>>((ref) {
   final productsAsync = ref.watch(productsProvider);
   final query = ref.watch(searchQueryProvider).trim().toLowerCase();
@@ -114,8 +111,6 @@ final categoryNameProvider = Provider.family<String, String>((ref, categoryId) {
     orElse: () => 'Sans catégorie',
   );
 });
-
-// stock movements
 final stockMovementRepositoryProvider = Provider<StockMovementRepository>((
   ref,
 ) {
