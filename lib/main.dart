@@ -1,10 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:inventory_lite/firebase_options.dart';
+
+import 'firebase_options.dart';
+import 'presentation/screens/catalog_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const ProviderScope(child: InventoryLiteApp()));
@@ -22,7 +25,7 @@ class InventoryLiteApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const Scaffold(body: Center(child: Text('InventoryLite App'))),
+      home: const CatalogScreen(),
     );
   }
 }
