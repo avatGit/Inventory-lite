@@ -72,4 +72,17 @@ class FirestoreStockMovementRepository implements StockMovementRepository {
       throw Exception('Echec de l\'enregistrement du mouvement" $e');
     }
   }
+
+  @override
+  Stream<List<StockMovement>> watchRecentMovements({int limit = 10}) {
+    return _movementsRef
+        .orderBy('date', descending: true)
+        .limit(limit)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            return StockMovement.fromMap(doc.data(), doc.id);
+          }).toList();
+        });
+  }
 }
