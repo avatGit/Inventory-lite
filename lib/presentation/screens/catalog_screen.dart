@@ -5,6 +5,7 @@ import '../../features/barcode/presentation/screens/barcode_scanner_screen.dart'
 import '../../providers/catalog_providers.dart';
 import '../widgets/product_card.dart';
 import '../../data/models/category.dart';
+import 'add_edit_product_screen.dart';
 
 class CatalogScreen extends ConsumerWidget {
   const CatalogScreen({super.key});
@@ -20,7 +21,10 @@ class CatalogScreen extends ConsumerWidget {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: Naviguer vers AddEditProductScreen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddEditProductScreen()),
+          );
         },
         tooltip: 'Ajouter un produit',
         child: const Icon(Icons.add),
