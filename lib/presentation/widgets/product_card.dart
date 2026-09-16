@@ -74,7 +74,11 @@ class ProductCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            _StockBadge(label: stockStatus.label, color: stockStatus.color),
+            _StockBadge(
+              label: stockStatus.label,
+              color: stockStatus.color,
+              quantity: product.currentStock,
+            ),
           ],
         ),
       ),
@@ -97,25 +101,40 @@ class ProductCard extends StatelessWidget {
 class _StockBadge extends StatelessWidget {
   final String label;
   final Color color;
+  final int quantity;
 
-  const _StockBadge({required this.label, required this.color});
+  const _StockBadge({
+    required this.label,
+    required this.color,
+    required this.quantity,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
-      ),
+        const SizedBox(height: 6),
+        Text(
+          'Qté : $quantity',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
+      ],
     );
   }
 }

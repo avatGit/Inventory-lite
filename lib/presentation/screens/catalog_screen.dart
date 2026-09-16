@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/catalog_providers.dart';
 import '../widgets/product_card.dart';
+import '../../data/models/category.dart';
 
 class CatalogScreen extends ConsumerWidget {
   const CatalogScreen({super.key});
@@ -15,9 +16,17 @@ class CatalogScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Catalogue'), centerTitle: false),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // TODO: Naviguer vers AddEditProductScreen
+        },
+        tooltip: 'Ajouter un produit',
+        child: const Icon(Icons.add),
+      ),
       body: Column(
         children: [
-          _SearchField(ref: ref),
+          const _SearchField(),
           _CategoryFilter(
             categoriesAsync: categoriesAsync,
             selectedCategory: selectedCategory,
@@ -40,7 +49,9 @@ class CatalogScreen extends ConsumerWidget {
                 }
 
                 return ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.only(
+                    bottom: 80,
+                  ), // Padding augmenté pour ne pas cacher le dernier élément sous le FAB
                   itemCount: products.length,
                   itemBuilder: (context, index) {
                     final product = products[index];
@@ -63,28 +74,62 @@ class CatalogScreen extends ConsumerWidget {
   }
 }
 
-class _SearchField extends StatelessWidget {
-  final WidgetRef ref;
+// CORRECTION : Passage en ConsumerStatefulWidget pour gérer le TextEditingController
+class _SearchField extends ConsumerStatefulWidget {
+  const _SearchField();
 
-  const _SearchField({required this.ref});
+  @override
+  ConsumerState<_SearchField> createState() => _SearchFieldState();
+}
+
+class _SearchFieldState extends ConsumerState<_SearchField> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: TextField(
+        controller: _controller,
         onChanged: (value) {
           ref.read(searchQueryProvider.notifier).setQuery(value);
         },
         decoration: InputDecoration(
           hintText: 'Rechercher un produit...',
           prefixIcon: const Icon(Icons.search),
-          suffixIcon: IconButton(
-            tooltip: 'Effacer la recherche',
-            icon: const Icon(Icons.clear),
-            onPressed: () {
-              ref.read(searchQueryProvider.notifier).clear();
-            },
+          // CORRECTION : Un Row dans le suffixIcon pour accueillir le Scanner ET la Croix
+          suffixIcon: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                tooltip: 'Scanner un code-barres',
+                icon: const Icon(Icons.qr_code_scanner),
+                onPressed: () {
+                  // TODO: Intégrer ton BarcodeScannerScreen ici
+                  // Ex: final code = await Navigator.push(...);
+                  // if (code != null) {
+                  //   _controller.text = code;
+                  //   ref.read(searchQueryProvider.notifier).setQuery(code);
+                  // }
+                },
+              ),
+              IconButton(
+                tooltip: 'Effacer la recherche',
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  _controller.clear(); // Efface le texte visuellement
+                  ref
+                      .read(searchQueryProvider.notifier)
+                      .clear(); // Efface l'état Riverpod
+                },
+              ),
+            ],
           ),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         ),
@@ -94,7 +139,7 @@ class _SearchField extends StatelessWidget {
 }
 
 class _CategoryFilter extends StatelessWidget {
-  final AsyncValue categoriesAsync;
+  final AsyncValue<List<Category>> categoriesAsync;
   final String selectedCategory;
   final ValueChanged<String> onCategorySelected;
 
@@ -133,13 +178,16 @@ class _CategoryFilter extends StatelessWidget {
                 selected: selectedCategory == 'all',
                 onSelected: () => onCategorySelected('all'),
               ),
-              ...categories.map(
-                (category) => _CategoryChip(
-                  label: category.name,
-                  selected: selectedCategory == category.id,
-                  onSelected: () => onCategorySelected(category.id),
-                ),
-              ),
+              // Filtre rapide pour éviter le doublon "Toutes" venant potentiellement de la base de données
+              ...categories
+                  .where((category) => category.name.toLowerCase() != 'toutes')
+                  .map(
+                    (category) => _CategoryChip(
+                      label: category.name,
+                      selected: selectedCategory == category.id,
+                      onSelected: () => onCategorySelected(category.id),
+                    ),
+                  ),
             ],
           );
         },
