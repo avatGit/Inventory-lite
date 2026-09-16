@@ -1,20 +1,20 @@
 ﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inventory_lite/data/repositories/firestore_category_repository.dart';
+import 'package:inventory_lite/data/repositories/firestore_product_repository.dart';
 
 import '../data/models/category.dart';
 import '../data/models/product.dart';
 import '../data/repositories/category_repository.dart';
-import '../data/repositories/mock_category_repository.dart';
-import '../data/repositories/mock_product_repository.dart';
 import '../data/repositories/product_repository.dart';
 import '../data/repositories/firestore_stock_movement_repository.dart';
 import '../data/repositories/stock_movement_repository.dart';
 
 final productRepositoryProvider = Provider<ProductRepository>((ref) {
-  return MockProductRepository();
+  return FirestoreProductRepository();
 });
 
 final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
-  return MockCategoryRepository();
+  return FirestoreCategoryRepository();
 });
 
 final productsProvider = StreamProvider<List<Product>>((ref) {
