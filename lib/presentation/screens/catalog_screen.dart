@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/barcode/presentation/screens/barcode_scanner_screen.dart';
 import '../../providers/catalog_providers.dart';
 import '../widgets/product_card.dart';
 import '../../data/models/category.dart';
@@ -49,9 +50,7 @@ class CatalogScreen extends ConsumerWidget {
                 }
 
                 return ListView.builder(
-                  padding: const EdgeInsets.only(
-                    bottom: 80,
-                  ), // Padding augmenté pour ne pas cacher le dernier élément sous le FAB
+                  padding: const EdgeInsets.only(bottom: 80),
                   itemCount: products.length,
                   itemBuilder: (context, index) {
                     final product = products[index];
@@ -74,7 +73,6 @@ class CatalogScreen extends ConsumerWidget {
   }
 }
 
-// CORRECTION : Passage en ConsumerStatefulWidget pour gérer le TextEditingController
 class _SearchField extends ConsumerStatefulWidget {
   const _SearchField();
 
@@ -103,30 +101,31 @@ class _SearchFieldState extends ConsumerState<_SearchField> {
         decoration: InputDecoration(
           hintText: 'Rechercher un produit...',
           prefixIcon: const Icon(Icons.search),
-          // CORRECTION : Un Row dans le suffixIcon pour accueillir le Scanner ET la Croix
           suffixIcon: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
                 tooltip: 'Scanner un code-barres',
                 icon: const Icon(Icons.qr_code_scanner),
-                onPressed: () {
-                  // TODO: Intégrer ton BarcodeScannerScreen ici
-                  // Ex: final code = await Navigator.push(...);
-                  // if (code != null) {
-                  //   _controller.text = code;
-                  //   ref.read(searchQueryProvider.notifier).setQuery(code);
-                  // }
+                onPressed: () async {
+                  final code = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BarcodeScannerScreen(),
+                    ),
+                  );
+                  if (code != null && code.isNotEmpty) {
+                    _controller.text = code;
+                    ref.read(searchQueryProvider.notifier).setQuery(code);
+                  }
                 },
               ),
               IconButton(
                 tooltip: 'Effacer la recherche',
                 icon: const Icon(Icons.clear),
                 onPressed: () {
-                  _controller.clear(); // Efface le texte visuellement
-                  ref
-                      .read(searchQueryProvider.notifier)
-                      .clear(); // Efface l'état Riverpod
+                  _controller.clear();
+                  ref.read(searchQueryProvider.notifier).clear();
                 },
               ),
             ],
@@ -178,7 +177,6 @@ class _CategoryFilter extends StatelessWidget {
                 selected: selectedCategory == 'all',
                 onSelected: () => onCategorySelected('all'),
               ),
-              // Filtre rapide pour éviter le doublon "Toutes" venant potentiellement de la base de données
               ...categories
                   .where((category) => category.name.toLowerCase() != 'toutes')
                   .map(
