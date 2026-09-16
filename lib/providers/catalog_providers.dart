@@ -4,6 +4,7 @@ import 'package:inventory_lite/data/repositories/firestore_product_repository.da
 
 import '../data/models/category.dart';
 import '../data/models/product.dart';
+import '../data/models/stock_movement.dart';
 import '../data/repositories/category_repository.dart';
 import '../data/repositories/product_repository.dart';
 import '../data/repositories/firestore_stock_movement_repository.dart';
@@ -115,4 +116,30 @@ final stockMovementRepositoryProvider = Provider<StockMovementRepository>((
   ref,
 ) {
   return FirestoreStockMovementRepository();
+});
+
+// ---------------------------------------------------------------------------
+// DASHBOARD PROVIDERS
+// ---------------------------------------------------------------------------
+
+/// The 10 most recent stock movements for the dashboard.
+final recentMovementsProvider = StreamProvider<List<StockMovement>>((ref) {
+  final repository = ref.watch(stockMovementRepositoryProvider);
+  return repository.watchRecentMovements(limit: 10);
+});
+
+/// Returns the product name for a given product ID (used in movement history).
+final productNameProvider = Provider.family<String, String>((ref, productId) {
+  final productsAsync = ref.watch(productsProvider);
+  return productsAsync.maybeWhen(
+    data: (products) {
+      for (final product in products) {
+        if (product.id == productId) {
+          return product.name;
+        }
+      }
+      return 'Produit supprimé';
+    },
+    orElse: () => '...',
+  );
 });

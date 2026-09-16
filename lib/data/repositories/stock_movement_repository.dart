@@ -6,4 +6,6 @@ abstract class StockMovementRepository {
 
   /// Adds a stock movement AND updates the product's currentStock atomically
   Future<void> addMovement(StockMovement movement);
+
+  Stream<List<StockMovement>> watchRecentMovements({int limit = 10});
 }
