@@ -107,7 +107,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
                 onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(Icons.close, color: Colors.white, size: 28),
                 style: IconButton.styleFrom(
-                  backgroundColor: Colors.black.withOpacity(0.4),
+                  backgroundColor: Colors.black.withValues(alpha: 0.4),
                 ),
               ),
               const SizedBox(width: 16),
@@ -187,7 +187,7 @@ class _ScannerControlButton extends StatelessWidget {
           style: IconButton.styleFrom(
             backgroundColor: isActive
                 ? const Color(0xFF1E40AF) // Primary Blue from our design system
-                : Colors.black.withOpacity(0.5),
+                : Colors.black.withValues(alpha: 0.5),
             padding: const EdgeInsets.all(14),
           ),
         ),
@@ -223,7 +223,7 @@ class _ScannerOverlayPainter extends CustomPainter {
 
     // --- 1. Draw dark overlay with a hole for the scan area ---
     final backgroundPaint = Paint()
-      ..color = Colors.black.withOpacity(0.55)
+      ..color = Colors.black.withValues(alpha: 0.55)
       ..style = PaintingStyle.fill;
 
     final path = Path()

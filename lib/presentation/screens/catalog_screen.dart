@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../features/barcode/presentation/screens/barcode_scanner_screen.dart';
+import './barcode_scanner_screen.dart';
 import '../../providers/catalog_providers.dart';
 import '../widgets/product_card.dart';
 import '../../data/models/category.dart';

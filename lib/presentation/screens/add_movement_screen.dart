@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:inventory_lite/data/models/product.dart';
 import 'package:inventory_lite/data/models/stock_movement.dart';
 import 'package:inventory_lite/providers/catalog_providers.dart';
-import 'package:inventory_lite/features/barcode/presentation/screens/barcode_scanner_screen.dart';
+import './barcode_scanner_screen.dart';
 
 /// Screen for registering stock entries (in) and exits (out).
 ///

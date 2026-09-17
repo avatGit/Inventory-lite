@@ -270,7 +270,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         return ListView.separated(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
           itemCount: movements.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 10),
+          separatorBuilder: (_, _) => const SizedBox(height: 10),
           itemBuilder: (context, index) {
             return _MovementTile(movement: movements[index]);
           },
