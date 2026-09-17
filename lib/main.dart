@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:inventory_lite/firebase_options.dart';
-import './presentation/screens/home_screen.dart';
+import 'package:inventory_lite/presentation/screens/main_shell.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +25,7 @@ class InventoryLiteApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1E40AF)),
         useMaterial3: true,
       ),
-      home: const HomeScreen(), // ← CHANGÉ (remplace TestFirestoreScreen)
+      home: const MainShell(),
     );
   }
 }
